@@ -7,6 +7,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_application_1/models/homework.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_application_1/main.dart';
 
@@ -14,6 +16,8 @@ void main() {
   testWidgets('opens the deadline home and add homework page', (
     WidgetTester tester,
   ) async {
+    SharedPreferences.setMockInitialValues({});
+    await HomeworkStore.instance.initialize();
     await tester.pumpWidget(const MyApp());
 
     expect(find.text('My Deadlines'), findsOneWidget);

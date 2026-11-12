@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
               ),
             _HomeworkCard(
               homework: items[index],
-              onComplete: () =>
+              onComplete: () async =>
                   HomeworkStore.instance.setCompleted(items[index].id, true),
             ),
           ],

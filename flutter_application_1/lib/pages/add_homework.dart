@@ -53,10 +53,10 @@ class _AddHomeworkPageState extends State<AddHomeworkPage> {
     }
   }
 
-  void _saveHomework() {
+  Future<void> _saveHomework() async {
     if (!_formKey.currentState!.validate()) return;
 
-    HomeworkStore.instance.add(
+    await HomeworkStore.instance.add(
       title: _titleController.text.trim(),
       subject: _subjectController.text.trim(),
       dueAt: DateTime(
@@ -68,6 +68,7 @@ class _AddHomeworkPageState extends State<AddHomeworkPage> {
       ),
       notes: _notesController.text.trim(),
     );
+    if (!mounted) return;
     Navigator.of(context).pop();
   }
 

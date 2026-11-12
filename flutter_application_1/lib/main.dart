@@ -1,7 +1,10 @@
-                import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/homework.dart';
 import 'package:flutter_application_1/pages/home.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HomeworkStore.instance.initialize();
   runApp(const MyApp());
 }
 

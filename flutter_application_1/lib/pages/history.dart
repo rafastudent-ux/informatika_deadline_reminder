@@ -100,10 +100,11 @@ class HistoryPage extends StatelessWidget {
                         ),
                         const Spacer(),
                         OutlinedButton(
-                          onPressed: () => HomeworkStore.instance.setCompleted(
-                            item.id,
-                            false,
-                          ),
+                          onPressed: () async =>
+                              HomeworkStore.instance.setCompleted(
+                                item.id,
+                                false,
+                              ),
                           child: const Text('Move to Home'),
                         ),
                       ],
@@ -127,16 +128,16 @@ String _formatTime(DateTime date) {
 }
 
 String _month(int month) => const [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ][month - 1];
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+][month - 1];
