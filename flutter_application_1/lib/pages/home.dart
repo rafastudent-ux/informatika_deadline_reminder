@@ -61,67 +61,86 @@ class _HomePageState extends State<HomePage> {
             .toList()
           ..sort((a, b) => a.dueAt.compareTo(b.dueAt));
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-      children: [
-        const Text('Good morning 👋', style: TextStyle(color: Colors.grey)),
-        const SizedBox(height: 4),
-        const Text(
-          'My Deadlines',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 20),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              _filterChip('All', _DeadlineFilter.all),
-              _filterChip('Today', _DeadlineFilter.today),
-              _filterChip('This Week', _DeadlineFilter.thisWeek),
-              _filterChip('Overdue', _DeadlineFilter.overdue),
-            ],
+    final horizontalPadding = MediaQuery.sizeOf(context).width < 400
+        ? 16.0
+        : 24.0;
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 760),
+        child: ListView(
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            24,
+            horizontalPadding,
+            24,
           ),
-        ),
-        const SizedBox(height: 18),
-        if (items.isEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 72),
-            child: Column(
-              children: [
-                const Icon(Icons.event_available, size: 44, color: Colors.grey),
-                const SizedBox(height: 12),
-                Text(
-                  _filter == _DeadlineFilter.all
-                      ? 'No homework yet'
-                      : 'No deadlines in this section',
-                  style: const TextStyle(color: Colors.grey),
-                ),
-                const SizedBox(height: 6),
-                const Text('Tap + to add a homework deadline.'),
-              ],
+          children: [
+            const Text('Good morning 👋', style: TextStyle(color: Colors.grey)),
+            const SizedBox(height: 4),
+            const Text(
+              'My Deadlines',
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
-          )
-        else
-          for (var index = 0; index < items.length; index++) ...[
-            if (index == 0 ||
-                !DateUtils.isSameDay(
-                  items[index - 1].dueAt,
-                  items[index].dueAt,
-                ))
-              Padding(
-                padding: const EdgeInsets.only(top: 6, bottom: 8),
-                child: Text(
-                  _dateHeading(items[index].dueAt, today),
-                  style: const TextStyle(color: Colors.grey, fontSize: 13),
-                ),
+            const SizedBox(height: 20),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _filterChip('All', _DeadlineFilter.all),
+                  _filterChip('Today', _DeadlineFilter.today),
+                  _filterChip('This Week', _DeadlineFilter.thisWeek),
+                  _filterChip('Overdue', _DeadlineFilter.overdue),
+                ],
               ),
-            _HomeworkCard(
-              homework: items[index],
-              onComplete: () async =>
-                  HomeworkStore.instance.setCompleted(items[index].id, true),
             ),
+            const SizedBox(height: 18),
+            if (items.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 72),
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.event_available,
+                      size: 44,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      _filter == _DeadlineFilter.all
+                          ? 'No homework yet'
+                          : 'No deadlines in this section',
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text('Tap + to add a homework deadline.'),
+                  ],
+                ),
+              )
+            else
+              for (var index = 0; index < items.length; index++) ...[
+                if (index == 0 ||
+                    !DateUtils.isSameDay(
+                      items[index - 1].dueAt,
+                      items[index].dueAt,
+                    ))
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6, bottom: 8),
+                    child: Text(
+                      _dateHeading(items[index].dueAt, today),
+                      style: const TextStyle(color: Colors.grey, fontSize: 13),
+                    ),
+                  ),
+                _HomeworkCard(
+                  homework: items[index],
+                  onComplete: () async => HomeworkStore.instance.setCompleted(
+                    items[index].id,
+                    true,
+                  ),
+                ),
+              ],
           ],
-      ],
+        ),
+      ),
     );
   }
 

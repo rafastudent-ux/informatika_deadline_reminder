@@ -25,4 +25,43 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('saveHomeworkButton')), findsOneWidget);
   });
+
+  testWidgets('confirms deleting a completed item on a narrow screen', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    SharedPreferences.setMockInitialValues({});
+    final store = HomeworkStore.instance;
+    await store.initialize();
+    await store.add(
+      title: 'A completed assignment with a long title',
+      subject: 'Computer Science',
+      dueAt: DateTime(2026, 12, 1, 15, 30),
+    );
+    await store.setCompleted(store.homework.single.id, true);
+    await tester.pumpWidget(const MyApp());
+    await tester.tap(find.text('Done').last);
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.byTooltip('Delete completed homework'));
+    await tester.pumpAndSettle();
+    expect(find.text('Delete completed homework?'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(store.homework, hasLength(1));
+
+    await tester.tap(find.byTooltip('Delete completed homework'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+
+    expect(store.homework, isEmpty);
+    expect(find.text('Completed homework will appear here.'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

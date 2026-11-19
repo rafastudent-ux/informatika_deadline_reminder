@@ -108,6 +108,15 @@ class HomeworkStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> delete(String id) async {
+    final homework = _homework.where((item) => item.id != id).toList();
+    if (homework.length == _homework.length) return;
+
+    await _save(homework);
+    _homework = homework;
+    notifyListeners();
+  }
+
   Future<void> _save(List<Homework> homework) async {
     final preferences = await SharedPreferences.getInstance();
     final saved = await preferences.setString(
