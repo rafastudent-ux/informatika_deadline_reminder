@@ -64,4 +64,28 @@ void main() {
     expect(find.text('Completed homework will appear here.'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('centers content at readable widths on a desktop screen', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(1440, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    SharedPreferences.setMockInitialValues({});
+    await HomeworkStore.instance.initialize();
+    await tester.pumpWidget(const MyApp());
+
+    expect(tester.getSize(find.byType(ListView)).width, 960);
+
+    await tester.tap(find.text('Done').last);
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(ListView)).width, 960);
+
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+    expect(tester.getSize(find.byType(ListView)).width, 640);
+    expect(tester.takeException(), isNull);
+  });
 }

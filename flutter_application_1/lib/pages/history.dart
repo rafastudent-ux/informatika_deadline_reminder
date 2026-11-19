@@ -40,135 +40,147 @@ class HistoryPage extends StatelessWidget {
                 .toList()
               ..sort((a, b) => b.dueAt.compareTo(a.dueAt));
 
-        final horizontalPadding = MediaQuery.sizeOf(context).width < 400
-            ? 16.0
-            : 24.0;
-        return Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 760),
-            child: ListView(
-              padding: EdgeInsets.fromLTRB(
-                horizontalPadding,
-                24,
-                horizontalPadding,
-                24,
-              ),
-              children: [
-                const Text(
-                  'Deadline Zone',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Completed Assignments  ·  ${completed.length} Done',
-                  style: const TextStyle(color: Colors.grey),
-                ),
-                const SizedBox(height: 20),
-                if (completed.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 72),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.check_circle_outline,
-                          size: 44,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(height: 12),
-                        Text(
-                          'Completed homework will appear here.',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  )
-                else
-                  for (final item in completed)
-                    Card(
-                      color: Colors.white,
-                      elevation: 0,
-                      margin: const EdgeInsets.only(bottom: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        side: const BorderSide(color: Color(0xFFEAEAEA)),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final horizontalPadding = constraints.maxWidth < 400 ? 16.0 : 24.0;
+            final contentMaxWidth = constraints.maxWidth >= 1200
+                ? 960.0
+                : 760.0;
+            return Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: contentMaxWidth),
+                child: ListView(
+                  padding: EdgeInsets.fromLTRB(
+                    horizontalPadding,
+                    24,
+                    horizontalPadding,
+                    24,
+                  ),
+                  children: [
+                    const Text(
+                      'Deadline Zone',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(14),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Completed Assignments  ·  ${completed.length} Done',
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    const SizedBox(height: 20),
+                    if (completed.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 72),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.check_circle,
-                                  color: Color(0xFF10B981),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Text(
-                                    item.title,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            Icon(
+                              Icons.check_circle_outline,
+                              size: 44,
+                              color: Colors.grey,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 34, top: 4),
-                              child: Text(
-                                '${item.subject} · Due ${_formatDateTime(item.dueAt)}',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            Wrap(
-                              alignment: WrapAlignment.spaceBetween,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 5,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFE6F7F1),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: const Text(
-                                    'Completed',
-                                    style: TextStyle(
-                                      color: Color(0xFF079669),
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                ),
-                                OutlinedButton(
-                                  onPressed: () async => HomeworkStore.instance
-                                      .setCompleted(item.id, false),
-                                  child: const Text('Move to Home'),
-                                ),
-                                IconButton(
-                                  tooltip: 'Delete completed homework',
-                                  onPressed: () =>
-                                      _confirmDelete(context, item),
-                                  icon: const Icon(Icons.delete_outline),
-                                  color: Colors.red,
-                                ),
-                              ],
+                            SizedBox(height: 12),
+                            Text(
+                              'Completed homework will appear here.',
+                              style: TextStyle(color: Colors.grey),
                             ),
                           ],
                         ),
-                      ),
-                    ),
-              ],
-            ),
-          ),
+                      )
+                    else
+                      for (final item in completed)
+                        Card(
+                          color: Colors.white,
+                          elevation: 0,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            side: const BorderSide(color: Color(0xFFEAEAEA)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.check_circle,
+                                      color: Color(0xFF10B981),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                        item.title,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 34,
+                                    top: 4,
+                                  ),
+                                  child: Text(
+                                    '${item.subject} · Due ${_formatDateTime(item.dueAt)}',
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Wrap(
+                                  alignment: WrapAlignment.spaceBetween,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 5,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFE6F7F1),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: const Text(
+                                        'Completed',
+                                        style: TextStyle(
+                                          color: Color(0xFF079669),
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ),
+                                    OutlinedButton(
+                                      onPressed: () async => HomeworkStore
+                                          .instance
+                                          .setCompleted(item.id, false),
+                                      child: const Text('Move to Home'),
+                                    ),
+                                    IconButton(
+                                      tooltip: 'Delete completed homework',
+                                      onPressed: () =>
+                                          _confirmDelete(context, item),
+                                      icon: const Icon(Icons.delete_outline),
+                                      color: Colors.red,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );

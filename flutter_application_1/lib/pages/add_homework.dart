@@ -76,83 +76,116 @@ class _AddHomeworkPageState extends State<AddHomeworkPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Add homework')),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            const Text(
-              'Add homework',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            const Text('Set the details and choose a due date.'),
-            const SizedBox(height: 24),
-            TextFormField(
-              key: const Key('homeworkTitleField'),
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Homework title',
-                hintText: 'e.g. Chapter 8 exercises',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) => value == null || value.trim().isEmpty
-                  ? 'Please enter a homework title'
-                  : null,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              key: const Key('homeworkSubjectField'),
-              controller: _subjectController,
-              decoration: const InputDecoration(
-                labelText: 'Subject',
-                hintText: 'e.g. Calculus II',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) => value == null || value.trim().isEmpty
-                  ? 'Please enter a subject'
-                  : null,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: _selectDate,
-                    icon: const Icon(Icons.calendar_today_outlined),
-                    label: Text(_formatDate(_dueDate)),
-                  ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final horizontalPadding = constraints.maxWidth < 400 ? 16.0 : 24.0;
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  padding: EdgeInsets.all(horizontalPadding),
+                  children: [
+                    const Text(
+                      'Add homework',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text('Set the details and choose a due date.'),
+                    const SizedBox(height: 24),
+                    TextFormField(
+                      key: const Key('homeworkTitleField'),
+                      controller: _titleController,
+                      decoration: const InputDecoration(
+                        labelText: 'Homework title',
+                        hintText: 'e.g. Chapter 8 exercises',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) =>
+                          value == null || value.trim().isEmpty
+                          ? 'Please enter a homework title'
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      key: const Key('homeworkSubjectField'),
+                      controller: _subjectController,
+                      decoration: const InputDecoration(
+                        labelText: 'Subject',
+                        hintText: 'e.g. Calculus II',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) =>
+                          value == null || value.trim().isEmpty
+                          ? 'Please enter a subject'
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                    if (constraints.maxWidth < 420)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          OutlinedButton.icon(
+                            onPressed: _selectDate,
+                            icon: const Icon(Icons.calendar_today_outlined),
+                            label: Text(_formatDate(_dueDate)),
+                          ),
+                          const SizedBox(height: 8),
+                          OutlinedButton.icon(
+                            onPressed: _selectTime,
+                            icon: const Icon(Icons.schedule),
+                            label: Text(_dueTime.format(context)),
+                          ),
+                        ],
+                      )
+                    else
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: _selectDate,
+                              icon: const Icon(Icons.calendar_today_outlined),
+                              label: Text(_formatDate(_dueDate)),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: _selectTime,
+                              icon: const Icon(Icons.schedule),
+                              label: Text(_dueTime.format(context)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _notesController,
+                      maxLines: 3,
+                      decoration: const InputDecoration(
+                        labelText: 'Notes (optional)',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      height: 50,
+                      child: FilledButton(
+                        key: const Key('saveHomeworkButton'),
+                        onPressed: _saveHomework,
+                        child: const Text('Add homework'),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: _selectTime,
-                    icon: const Icon(Icons.schedule),
-                    label: Text(_dueTime.format(context)),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _notesController,
-              maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: 'Notes (optional)',
-                border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 50,
-              child: FilledButton(
-                key: const Key('saveHomeworkButton'),
-                onPressed: _saveHomework,
-                child: const Text('Add homework'),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
